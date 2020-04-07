@@ -37,6 +37,13 @@ namespace ANosekProductEF
             prodContext.SaveChanges();
         }
 
+        public static void AddInvoice(ProdContext prodContext)
+        {
+            Invoice inv = new Invoice { };
+            prodContext.Invoices.Add(inv);
+            prodContext.SaveChanges();
+        }
+
 
         public static void ConnectProductToSupplier(ProdContext prodContext)
         {
@@ -70,7 +77,30 @@ namespace ANosekProductEF
             prodContext.SaveChanges();
         }
 
-        public static void ShowProductsWithSuppliers(ProdContext prodContext)
+        public static void ConnectProductToInvoice(ProdContext prodContext)
+        {
+            Console.WriteLine("Write name of product");
+            String prodName = Console.ReadLine();
+
+            Console.WriteLine("Write number of invoice");
+            String invNumStr = Console.ReadLine();
+            int invNum = Int32.Parse(invNumStr);
+
+            Product product = prodContext.Products.Where(p => p.Name == prodName).FirstOrDefault();
+
+            Invoice invoice = prodContext.Invoices.Where(i => i.InvoiceNumber == invNum).FirstOrDefault();
+
+            prodContext.ProductInvoices.Add(new ProductInvoice
+            {
+                ProductID = product.ProductID,
+                Product = product,
+                InvoiceNumber = invoice.InvoiceNumber,
+                Invoice = invoice
+            });
+            prodContext.SaveChanges();
+        }
+
+    public static void ShowProductsWithSuppliers(ProdContext prodContext)
         {
 
             Console.WriteLine("List of products with suppliers:");
@@ -110,6 +140,7 @@ namespace ANosekProductEF
             }
         }
 
+
         public static void ShowProductsWithCategories(ProdContext prodContext)
         {
 
@@ -148,6 +179,65 @@ namespace ANosekProductEF
             }
         }
 
+        public static void ShowProductInvoices(ProdContext prodContext)
+        {
+            Console.WriteLine("ProductInvoices:");
+
+            foreach (ProductInvoice item in prodContext.ProductInvoices)
+            {
+                prodContext.Entry(item).Reference(item => item.Product).Load();
+                prodContext.Entry(item).Reference(item => item.Invoice).Load();
+
+
+                if (item.Product != null)
+                {
+                    Console.Write("Product:");
+                    Console.WriteLine(item.Product.Name);
+                }
+                if (item.Invoice != null)
+                {
+                    Console.Write("Invoice:");
+                    Console.WriteLine(item.Invoice.InvoiceNumber);
+                }
+                Console.WriteLine();
+            }
+        }
+
+        public static void ShowInvoicesOfProduct(ProdContext prodContext)
+        {
+            Console.WriteLine("Write name of product");
+            String prodName = Console.ReadLine();
+
+            Product product = prodContext.Products.Where(p => p.Name == prodName).FirstOrDefault();
+            prodContext.Entry(product).Collection(prod => prod.ProductInvoices).Load();
+
+            Console.WriteLine("List of invoices for given product:");
+
+            foreach (ProductInvoice prodInv in product.ProductInvoices)
+            {
+                prodContext.Entry(prodInv).Reference(prodInv => prodInv.Invoice).Load();
+                Console.WriteLine(prodInv.InvoiceNumber);
+            }
+        }
+
+        public static void ShowProductsOfInvoice(ProdContext prodContext)
+        {
+            Console.WriteLine("Write number of invoice");
+            String invNumStr = Console.ReadLine();
+            int invnum = Int32.Parse(invNumStr);
+
+            Invoice invoice = prodContext.Invoices.Where(i => i.InvoiceNumber == invnum).FirstOrDefault();
+            prodContext.Entry(invoice).Collection(inv => inv.ProductInvoices).Load();
+
+            Console.WriteLine("List of products for given invoice:");
+
+            foreach (ProductInvoice prodInv in invoice.ProductInvoices)
+            {
+                prodContext.Entry(prodInv).Reference(prodInv => prodInv.Invoice).Load();
+                Console.WriteLine(prodInv.Product.Name);
+            }
+        }
+
         static void Main(string[] args)
         {
             ProdContext prodContext = new ProdContext();
@@ -158,17 +248,22 @@ namespace ANosekProductEF
             //prodContext.SaveChanges();
 
             //AddProduct(prodContext);
-            //AddSupplier(prodContext);
+            //AddSupplier(prodContext); 
             //AddCategory(prodContext);
+            //AddInvoice(prodContext);
 
             //ConnectProductToSupplier(prodContext);
             //ConnectProductToCategory(prodContext);
+            //ConnectProductToInvoice(prodContext);
 
             //ShowProductsWithSuppliers(prodContext);
             //ShowSuppliersWithProducts(prodContext);
-            ShowProductsWithCategories(prodContext);
-            ShowCategoriesWithProducts(prodContext);
-
+            //ShowProductsWithCategories(prodContext);
+            //ShowCategoriesWithProducts(prodContext);
+            //ShowProductInvoices(prodContext);
+            ShowProductInvoices(prodContext);
+            ShowInvoicesOfProduct(prodContext);
+            ShowProductsOfInvoice(prodContext);
 
         }
 

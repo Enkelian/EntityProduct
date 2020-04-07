@@ -30,6 +30,20 @@ namespace ANosekProductEF.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("ANosekProductEF.Invoice", b =>
+                {
+                    b.Property<int>("InvoiceNumber")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("InvoiceNumber");
+
+                    b.ToTable("Invoices");
+                });
+
             modelBuilder.Entity("ANosekProductEF.Product", b =>
                 {
                     b.Property<int>("ProductID")
@@ -55,6 +69,21 @@ namespace ANosekProductEF.Migrations
                     b.HasIndex("SupplierID");
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("ANosekProductEF.ProductInvoice", b =>
+                {
+                    b.Property<int>("ProductID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("InvoiceNumber")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ProductID", "InvoiceNumber");
+
+                    b.HasIndex("InvoiceNumber");
+
+                    b.ToTable("ProductInvoices");
                 });
 
             modelBuilder.Entity("ANosekProductEF.Supplier", b =>
@@ -86,6 +115,21 @@ namespace ANosekProductEF.Migrations
                     b.HasOne("ANosekProductEF.Supplier", "Supplier")
                         .WithMany("Products")
                         .HasForeignKey("SupplierID");
+                });
+
+            modelBuilder.Entity("ANosekProductEF.ProductInvoice", b =>
+                {
+                    b.HasOne("ANosekProductEF.Invoice", "Invoice")
+                        .WithMany("ProductInvoices")
+                        .HasForeignKey("InvoiceNumber")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ANosekProductEF.Product", "Product")
+                        .WithMany("ProductInvoices")
+                        .HasForeignKey("ProductID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

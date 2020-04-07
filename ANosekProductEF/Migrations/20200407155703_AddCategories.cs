@@ -20,6 +20,19 @@ namespace ANosekProductEF.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Invoices",
+                columns: table => new
+                {
+                    InvoiceNumber = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Quantity = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Invoices", x => x.InvoiceNumber);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Suppliers",
                 columns: table => new
                 {
@@ -62,6 +75,35 @@ namespace ANosekProductEF.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "ProductInvoices",
+                columns: table => new
+                {
+                    ProductID = table.Column<int>(nullable: false),
+                    InvoiceNumber = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductInvoices", x => new { x.ProductID, x.InvoiceNumber });
+                    table.ForeignKey(
+                        name: "FK_ProductInvoices_Invoices_InvoiceNumber",
+                        column: x => x.InvoiceNumber,
+                        principalTable: "Invoices",
+                        principalColumn: "InvoiceNumber",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProductInvoices_Products_ProductID",
+                        column: x => x.ProductID,
+                        principalTable: "Products",
+                        principalColumn: "ProductID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductInvoices_InvoiceNumber",
+                table: "ProductInvoices",
+                column: "InvoiceNumber");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Products_CategoryID",
                 table: "Products",
@@ -75,6 +117,12 @@ namespace ANosekProductEF.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "ProductInvoices");
+
+            migrationBuilder.DropTable(
+                name: "Invoices");
+
             migrationBuilder.DropTable(
                 name: "Products");
 

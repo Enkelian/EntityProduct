@@ -13,6 +13,7 @@ namespace ANosekProductEF
         public int UnitsInStock { get; set; }
         public Supplier Supplier { get; set; }
         public Category Category { get; set; }
+        public List<ProductInvoice> ProductInvoices { get; set; }
 
     }
 }
