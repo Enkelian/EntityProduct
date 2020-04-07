@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ANosekProductEF.Migrations
 {
     [DbContext(typeof(ProdContext))]
-    [Migration("20200406231739_SecondMigration")]
-    partial class SecondMigration
+    [Migration("20200407005200_SecRelation")]
+    partial class SecRelation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -63,7 +63,7 @@ namespace ANosekProductEF.Migrations
             modelBuilder.Entity("ANosekProductEF.Product", b =>
                 {
                     b.HasOne("ANosekProductEF.Supplier", "Supplier")
-                        .WithMany("Products")
+                        .WithMany()
                         .HasForeignKey("SupplierID");
                 });
 #pragma warning restore 612, 618

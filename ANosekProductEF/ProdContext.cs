@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Sqlite;
 using Microsoft.EntityFrameworkCore.Design;
 
 namespace ANosekProductEF
-{
+{   
     class ProdContext: DbContext
     {
        public DbSet<Product> Products { set; get; }

@@ -12,6 +12,7 @@ namespace ANosekProductEF
 
         public String City { get; set; }
 
-        public List<Product> Products { get; set; }
+        public virtual List<Product> Products { get; set; } //ex III
+
     }
 }

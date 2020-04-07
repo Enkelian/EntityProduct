@@ -2,7 +2,7 @@
 
 namespace ANosekProductEF.Migrations
 {
-    public partial class SecondMigration : Migration
+    public partial class SecRelation : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
