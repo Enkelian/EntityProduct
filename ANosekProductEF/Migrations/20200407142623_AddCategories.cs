@@ -2,10 +2,23 @@
 
 namespace ANosekProductEF.Migrations
 {
-    public partial class SecRelation : Migration
+    public partial class AddCategories : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Categories",
+                columns: table => new
+                {
+                    CategoryID = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Categories", x => x.CategoryID);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Suppliers",
                 columns: table => new
@@ -29,11 +42,18 @@ namespace ANosekProductEF.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(nullable: true),
                     UnitsInStock = table.Column<int>(nullable: false),
-                    SupplierID = table.Column<int>(nullable: true)
+                    SupplierID = table.Column<int>(nullable: true),
+                    CategoryID = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Products", x => x.ProductID);
+                    table.ForeignKey(
+                        name: "FK_Products_Categories_CategoryID",
+                        column: x => x.CategoryID,
+                        principalTable: "Categories",
+                        principalColumn: "CategoryID",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Products_Suppliers_SupplierID",
                         column: x => x.SupplierID,
@@ -41,6 +61,11 @@ namespace ANosekProductEF.Migrations
                         principalColumn: "SupplierID",
                         onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_CategoryID",
+                table: "Products",
+                column: "CategoryID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_SupplierID",
@@ -52,6 +77,9 @@ namespace ANosekProductEF.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Products");
+
+            migrationBuilder.DropTable(
+                name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "Suppliers");

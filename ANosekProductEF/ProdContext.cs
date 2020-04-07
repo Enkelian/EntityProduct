@@ -11,6 +11,7 @@ namespace ANosekProductEF
     {
        public DbSet<Product> Products { set; get; }
         public DbSet<Supplier> Suppliers { get; set; }
+        public DbSet<Category> Categories { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlite("DataSource=Product.db");
     }   
 }

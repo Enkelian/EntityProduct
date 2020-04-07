@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ANosekProductEF.Migrations
 {
     [DbContext(typeof(ProdContext))]
-    [Migration("20200407005200_SecRelation")]
-    partial class SecRelation
+    [Migration("20200407142623_AddCategories")]
+    partial class AddCategories
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -18,10 +18,27 @@ namespace ANosekProductEF.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.3");
 
+            modelBuilder.Entity("ANosekProductEF.Category", b =>
+                {
+                    b.Property<int>("CategoryID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("CategoryID");
+
+                    b.ToTable("Categories");
+                });
+
             modelBuilder.Entity("ANosekProductEF.Product", b =>
                 {
                     b.Property<int>("ProductID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("CategoryID")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
@@ -34,6 +51,8 @@ namespace ANosekProductEF.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("ProductID");
+
+                    b.HasIndex("CategoryID");
 
                     b.HasIndex("SupplierID");
 
@@ -62,8 +81,12 @@ namespace ANosekProductEF.Migrations
 
             modelBuilder.Entity("ANosekProductEF.Product", b =>
                 {
+                    b.HasOne("ANosekProductEF.Category", "Category")
+                        .WithMany("Products")
+                        .HasForeignKey("CategoryID");
+
                     b.HasOne("ANosekProductEF.Supplier", "Supplier")
-                        .WithMany()
+                        .WithMany("Products")
                         .HasForeignKey("SupplierID");
                 });
 #pragma warning restore 612, 618

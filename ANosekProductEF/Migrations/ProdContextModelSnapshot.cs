@@ -16,10 +16,27 @@ namespace ANosekProductEF.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.3");
 
+            modelBuilder.Entity("ANosekProductEF.Category", b =>
+                {
+                    b.Property<int>("CategoryID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("CategoryID");
+
+                    b.ToTable("Categories");
+                });
+
             modelBuilder.Entity("ANosekProductEF.Product", b =>
                 {
                     b.Property<int>("ProductID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("CategoryID")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
@@ -32,6 +49,8 @@ namespace ANosekProductEF.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("ProductID");
+
+                    b.HasIndex("CategoryID");
 
                     b.HasIndex("SupplierID");
 
@@ -60,6 +79,10 @@ namespace ANosekProductEF.Migrations
 
             modelBuilder.Entity("ANosekProductEF.Product", b =>
                 {
+                    b.HasOne("ANosekProductEF.Category", "Category")
+                        .WithMany("Products")
+                        .HasForeignKey("CategoryID");
+
                     b.HasOne("ANosekProductEF.Supplier", "Supplier")
                         .WithMany("Products")
                         .HasForeignKey("SupplierID");
