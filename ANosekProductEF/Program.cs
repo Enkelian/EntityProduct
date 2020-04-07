@@ -17,15 +17,36 @@ namespace ANosekProductEF
             prodContext.SaveChanges();
         }
 
-        public static void AddSupplier(ProdContext prodContext)
-        {
-            Console.WriteLine("Write name of supplier");
-            String suppName = Console.ReadLine();
-            Supplier supp1 = new Supplier { CompanyName = suppName };
+        //public static void AddSupplier(ProdContext prodContext)
+        //{
+        //    Console.WriteLine("Write name of supplier");
+        //    String suppName = Console.ReadLine();
+        //    Supplier supp1 = new Supplier { CompanyName = suppName };
 
-            prodContext.Suppliers.Add(supp1);
-            prodContext.SaveChanges();
-        }
+        //    prodContext.Suppliers.Add(supp1);
+        //    prodContext.SaveChanges();
+        //}
+
+            public static void AddSupplier(ProdContext prodContext)
+            {
+                Console.WriteLine("Write name of supplier");
+                String suppName = Console.ReadLine();
+                Supplier supp1 = new Supplier { CompanyName = suppName };
+
+                prodContext.Companies.Add(supp1);
+                prodContext.SaveChanges();
+            }
+
+            public static void AddCustomer(ProdContext prodContext)
+            {
+                Console.WriteLine("Write name of customer");
+                String suppName = Console.ReadLine();
+                Customer cust = new Customer { CompanyName = suppName, Discount =  0.2F };
+
+                prodContext.Companies.Add(cust);
+                prodContext.SaveChanges();
+            }
+
 
         public static void AddCategory(ProdContext prodContext)
         {
@@ -45,6 +66,21 @@ namespace ANosekProductEF
         }
 
 
+        //public static void ConnectProductToSupplier(ProdContext prodContext)
+        //{
+        //    Console.WriteLine("Write name of product");
+        //    string prodName = Console.ReadLine();
+
+        //    Console.WriteLine("Write name of supplier");
+        //    String suppName = Console.ReadLine();
+
+        //    Product product = prodContext.Products.Where(p => p.Name == prodName).FirstOrDefault();
+
+        //    Supplier supplier = prodContext.Suppliers.Where(s => s.CompanyName == suppName).FirstOrDefault();
+
+        //    product.Supplier = supplier;
+        //    prodContext.SaveChanges();
+        //}
         public static void ConnectProductToSupplier(ProdContext prodContext)
         {
             Console.WriteLine("Write name of product");
@@ -55,7 +91,9 @@ namespace ANosekProductEF
 
             Product product = prodContext.Products.Where(p => p.Name == prodName).FirstOrDefault();
 
-            Supplier supplier = prodContext.Suppliers.Where(s => s.CompanyName == suppName).FirstOrDefault();
+            Company company = prodContext.Companies.Where(s => s.CompanyName == suppName).FirstOrDefault();
+
+            Supplier supplier = (Supplier) company;
 
             product.Supplier = supplier;
             prodContext.SaveChanges();
@@ -100,7 +138,28 @@ namespace ANosekProductEF
             prodContext.SaveChanges();
         }
 
-    public static void ShowProductsWithSuppliers(ProdContext prodContext)
+        //public static void ShowProductsWithSuppliers(ProdContext prodContext)
+        //    {
+
+        //        Console.WriteLine("List of products with suppliers:");
+
+        //        foreach (Product item in prodContext.Products)
+        //        {
+        //            prodContext.Entry(item).Reference(prod => prod.Supplier).Load();
+
+        //            if (item.Supplier != null)
+        //            {
+
+        //                Console.WriteLine(item.Name + " " + item.Supplier.CompanyName);
+        //            }
+        //            else
+        //            {
+        //                Console.WriteLine(item.Name);
+        //            }
+        //        }
+        //    }
+
+        public static void ShowProductsWithSuppliers(ProdContext prodContext)
         {
 
             Console.WriteLine("List of products with suppliers:");
@@ -126,20 +185,24 @@ namespace ANosekProductEF
         {
             Console.WriteLine("List of suppliers with products:");
 
-            foreach (Supplier supp in prodContext.Suppliers)
+            foreach (Company comp in prodContext.Companies)
             {
-                prodContext.Entry(supp).Collection(supp => supp.Products).Load();
-
-                Console.WriteLine(supp.CompanyName);
-
-                foreach (Product prod in supp.Products)
+                if (comp is Supplier)
                 {
-                    Console.WriteLine(prod.Name);
+                    Supplier supp = (Supplier)comp;
+
+                    prodContext.Entry(supp).Collection(supp => supp.Products).Load();
+
+                    Console.WriteLine(supp.CompanyName);
+
+                    foreach (Product prod in supp.Products)
+                    {
+                        Console.WriteLine(prod.Name);
+                    }       
                 }
 
             }
         }
-
 
         public static void ShowProductsWithCategories(ProdContext prodContext)
         {
@@ -251,19 +314,21 @@ namespace ANosekProductEF
             //AddSupplier(prodContext); 
             //AddCategory(prodContext);
             //AddInvoice(prodContext);
+            //AddCustomer(prodContext);
+            //AddSupplier(prodContext);
 
             //ConnectProductToSupplier(prodContext);
             //ConnectProductToCategory(prodContext);
             //ConnectProductToInvoice(prodContext);
 
-            //ShowProductsWithSuppliers(prodContext);
-            //ShowSuppliersWithProducts(prodContext);
+            ShowProductsWithSuppliers(prodContext);
+            ShowSuppliersWithProducts(prodContext);
             //ShowProductsWithCategories(prodContext);
             //ShowCategoriesWithProducts(prodContext);
             //ShowProductInvoices(prodContext);
-            ShowProductInvoices(prodContext);
-            ShowInvoicesOfProduct(prodContext);
-            ShowProductsOfInvoice(prodContext);
+            //ShowProductInvoices(prodContext);
+            //ShowInvoicesOfProduct(prodContext);
+            //ShowProductsOfInvoice(prodContext);
 
         }
 

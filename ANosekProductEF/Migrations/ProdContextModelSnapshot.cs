@@ -30,6 +30,35 @@ namespace ANosekProductEF.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("ANosekProductEF.Company", b =>
+                {
+                    b.Property<int>("CompanyID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("City")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CompanyName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Street")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ZipCode")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("CompanyID");
+
+                    b.ToTable("Companies");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Company");
+                });
+
             modelBuilder.Entity("ANosekProductEF.Invoice", b =>
                 {
                     b.Property<int>("InvoiceNumber")
@@ -56,7 +85,7 @@ namespace ANosekProductEF.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("SupplierID")
+                    b.Property<int?>("SupplierCompanyID")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("UnitsInStock")
@@ -66,7 +95,7 @@ namespace ANosekProductEF.Migrations
 
                     b.HasIndex("CategoryID");
 
-                    b.HasIndex("SupplierID");
+                    b.HasIndex("SupplierCompanyID");
 
                     b.ToTable("Products");
                 });
@@ -86,24 +115,24 @@ namespace ANosekProductEF.Migrations
                     b.ToTable("ProductInvoices");
                 });
 
+            modelBuilder.Entity("ANosekProductEF.Customer", b =>
+                {
+                    b.HasBaseType("ANosekProductEF.Company");
+
+                    b.Property<float>("Discount")
+                        .HasColumnType("REAL");
+
+                    b.HasDiscriminator().HasValue("Customer");
+                });
+
             modelBuilder.Entity("ANosekProductEF.Supplier", b =>
                 {
-                    b.Property<int>("SupplierID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                    b.HasBaseType("ANosekProductEF.Company");
 
-                    b.Property<string>("City")
+                    b.Property<string>("BankAccountNumber")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("CompanyName")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Street")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("SupplierID");
-
-                    b.ToTable("Suppliers");
+                    b.HasDiscriminator().HasValue("Supplier");
                 });
 
             modelBuilder.Entity("ANosekProductEF.Product", b =>
@@ -114,7 +143,7 @@ namespace ANosekProductEF.Migrations
 
                     b.HasOne("ANosekProductEF.Supplier", "Supplier")
                         .WithMany("Products")
-                        .HasForeignKey("SupplierID");
+                        .HasForeignKey("SupplierCompanyID");
                 });
 
             modelBuilder.Entity("ANosekProductEF.ProductInvoice", b =>

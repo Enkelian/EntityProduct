@@ -2,7 +2,7 @@
 
 namespace ANosekProductEF.Migrations
 {
-    public partial class AddCategories : Migration
+    public partial class THP : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -20,6 +20,25 @@ namespace ANosekProductEF.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Companies",
+                columns: table => new
+                {
+                    CompanyID = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    CompanyName = table.Column<string>(nullable: true),
+                    Street = table.Column<string>(nullable: true),
+                    City = table.Column<string>(nullable: true),
+                    ZipCode = table.Column<string>(nullable: true),
+                    Discriminator = table.Column<string>(nullable: false),
+                    Discount = table.Column<float>(nullable: true),
+                    BankAccountNumber = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Companies", x => x.CompanyID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Invoices",
                 columns: table => new
                 {
@@ -33,21 +52,6 @@ namespace ANosekProductEF.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Suppliers",
-                columns: table => new
-                {
-                    SupplierID = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    CompanyName = table.Column<string>(nullable: true),
-                    Street = table.Column<string>(nullable: true),
-                    City = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Suppliers", x => x.SupplierID);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
@@ -55,7 +59,7 @@ namespace ANosekProductEF.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(nullable: true),
                     UnitsInStock = table.Column<int>(nullable: false),
-                    SupplierID = table.Column<int>(nullable: true),
+                    SupplierCompanyID = table.Column<int>(nullable: true),
                     CategoryID = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
@@ -68,10 +72,10 @@ namespace ANosekProductEF.Migrations
                         principalColumn: "CategoryID",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Products_Suppliers_SupplierID",
-                        column: x => x.SupplierID,
-                        principalTable: "Suppliers",
-                        principalColumn: "SupplierID",
+                        name: "FK_Products_Companies_SupplierCompanyID",
+                        column: x => x.SupplierCompanyID,
+                        principalTable: "Companies",
+                        principalColumn: "CompanyID",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -110,9 +114,9 @@ namespace ANosekProductEF.Migrations
                 column: "CategoryID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_SupplierID",
+                name: "IX_Products_SupplierCompanyID",
                 table: "Products",
-                column: "SupplierID");
+                column: "SupplierCompanyID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -130,7 +134,7 @@ namespace ANosekProductEF.Migrations
                 name: "Categories");
 
             migrationBuilder.DropTable(
-                name: "Suppliers");
+                name: "Companies");
         }
     }
 }

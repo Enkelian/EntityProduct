@@ -10,7 +10,7 @@ namespace ANosekProductEF
     class ProdContext: DbContext
     {
        public DbSet<Product> Products { set; get; }
-        public DbSet<Supplier> Suppliers { get; set; }
+        public DbSet<Company> Companies { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Invoice> Invoices { get; set; }
 
@@ -29,6 +29,9 @@ namespace ANosekProductEF
                 .HasOne(pi => pi.Invoice)
                 .WithMany(pi => pi.ProductInvoices)
                 .HasForeignKey(pi => pi.InvoiceNumber);
+
+            modelBuilder.Entity<Customer>();
+            modelBuilder.Entity<Supplier>();
         }
     }
 }
